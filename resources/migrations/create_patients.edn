@@ -1,0 +1,2 @@
+{:up   ["CREATE TABLE patients (id serial primary key, fhir_version character varying(30), content json);"]
+ :down ["DROP TABLE patients;"]}
