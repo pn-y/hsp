@@ -6,6 +6,7 @@
             [system.components.middleware :refer [new-middleware]]
             [system.components.jetty :refer [new-jetty new-web-server]]
             [system.components.postgres :refer [new-postgres-database]]
+            [system.components.hikari :refer [new-hikari-cp]]
             [hsp.lib.components.ragtime-component :refer [ragtime migrate rollback]]
             [system.repl :refer [set-init! system start]]
             [hsp.config :refer [config]]
@@ -16,7 +17,7 @@
   ([config]
    (let [config (config)]
      (component/system-map
-      :db         (new-postgres-database (:db config))
+      :db         (new-hikari-cp (:db config))
       :ragtime    (-> (ragtime (:ragtime config))
                       (component/using [:db]))
       :routes     (-> (new-endpoint home-routes)

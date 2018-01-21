@@ -40,7 +40,7 @@
 (def reset-all reloaded.repl/reset-all)
 
 (defn load-config []
-  {:datastore  (jdbc/sql-database (:db (current-env-config)))
+  {:datastore  (jdbc/sql-database (env :database-url))
    :migrations (jdbc/load-resources (get-in (current-env-config) [:ragtime :resource-path]))})
 
 (defn migrate []

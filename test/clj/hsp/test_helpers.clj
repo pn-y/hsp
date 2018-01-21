@@ -6,16 +6,13 @@
              [com.stuartsierra.component :as component]
              [clj-http.client :as client]
              [clojure.string :as str]
+             [system.components.hikari :refer [new-hikari-cp]]
              [honeysql.core :as sql]))
 
 (defn test-config []
-  (assoc (config)
-         :db {:classname "org.postgresql.Driver"
-              :dbtype    "postgresql"
-              :dbname    "hsp_test"
-              :host      "localhost"
-              :port      5432}
-         :http-port (Integer. (+ 30000 (rand-int 666)))))
+  (merge (config)
+         {:db {:database-name "hsp_test"}
+          :http-port (Integer. (+ 30000 (rand-int 666)))}))
 
 (declare ^:dynamic system)
 (declare ^:dynamic *db*)
@@ -43,10 +40,10 @@
    opts))
 
 (defn with-db [f]
-  (binding [*db* {:connection (jdbc/get-connection (:db (test-config)))}]
+  (binding [*db* (component/start (new-hikari-cp (:db (config))))]
     (try
       (f)
-      (finally (.close (:connection *db*))))))
+      (finally (component/stop *db*)))))
 
 (defn within-transaction [f]
   (jdbc/with-db-transaction [transaction *db*]

@@ -5,8 +5,14 @@
             [ring.middleware.logger :refer [wrap-with-logger]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [clojure.java.jdbc :as jdbc]
-            [cheshire.core :as json])
+            [cheshire.core :as json]
+            [clojure.string :as str])
   (:import [org.postgresql.util PGobject]))
+
+(defn db-config []
+  (if-let [jdbc-database-url (env :jdbc-database-url)]
+    {:jdbc-url jdbc-database-url}
+    {:adapter "postgresql" :database-name "hsp"}))
 
 (defn config []
   {:http-port  (Integer. (or (env :port) 10555))
@@ -15,11 +21,7 @@
                 [wrap-defaults api-defaults]
                 wrap-with-logger
                 wrap-gzip]
-   :db         (or (env :database-url) {:classname "org.postgresql.Driver"
-                                        :dbtype    "postgresql"
-                                        :dbname    "hsp"
-                                        :host      "localhost"
-                                        :port      5432})
+   :db         (db-config)
    :ragtime    {:resource-path "migrations"}})
 
 ;; setup JSON fields to automatically serialize-deserialize

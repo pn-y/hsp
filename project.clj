@@ -25,7 +25,9 @@
                  [cheshire "5.8.0"]
                  [ragtime "0.7.2"]
                  [org.clojure/core.match "0.3.0-alpha5"]
-                 [clj-http "3.7.0"]]
+                 [clj-http "3.7.0"]
+                 [org.slf4j/slf4j-simple "1.7.9"]
+                 [hikari-cp "2.0.1"]]
 
   :plugins [[lein-ancient "0.6.15"]
             [lein-cljsbuild "1.1.6"]

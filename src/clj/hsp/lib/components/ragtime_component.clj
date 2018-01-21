@@ -15,7 +15,7 @@
   component/Lifecycle
   (start [component]
     (-> component
-        (assoc :datastore (-> component :db :db-spec jdbc/sql-database))
+        (assoc :datastore (-> component :db jdbc/sql-database))
         (reload)))
   (stop [component]
     (dissoc component :datastore :migrations)))
