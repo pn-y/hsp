@@ -1,7 +1,7 @@
 (ns hsp.routes
   (:require [clojure.java.io :as io]
             [compojure.core :refer [GET PATCH POST routes context]]
-            [compojure.route :refer [resources]]
+            [compojure.route :refer [not-found resources]]
             [ring.util.response :refer [response]]
             [hsp.controllers.patients :as patients]))
 
@@ -18,4 +18,5 @@
      (GET "/:id" [id] (patients/show db id))
      (POST "/" {body :body} (patients/create db body))
      (PATCH "/:id" [id :as {body :body}] (patients/update-patient db id body)))
-   (resources "/")))
+   (resources "/")
+   (not-found {:status 404 :body {}})))

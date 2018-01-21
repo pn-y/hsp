@@ -17,7 +17,7 @@
   (first (jdbc/insert! db :patients patient)))
 
 (defn update-patient [db id patient]
-  (jdbc/execute! db (-> (h/update :patients)
-                        (h/sset (wrap-nested-maps patient))
-                        (h/where [:= :id id])
-                        (sql/format))))
+  (first (jdbc/execute! db (-> (h/update :patients)
+                               (h/sset (wrap-nested-maps patient))
+                               (h/where [:= :id id])
+                               (sql/format)))))

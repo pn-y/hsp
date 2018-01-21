@@ -2,7 +2,6 @@
   (:require  [clojure.test :as t]
              [clojure.java.jdbc :as jdbc]
              [hsp.application :as application]
-             [hsp.config :refer [config]]
              [com.stuartsierra.component :as component]
              [clj-http.client :as client]
              [clojure.string :as str]
@@ -10,9 +9,9 @@
              [honeysql.core :as sql]))
 
 (defn test-config []
-  (merge (config)
-         {:db {:database-name "hsp_test"}
-          :http-port (Integer. (+ 30000 (rand-int 666)))}))
+  (assoc (hsp.config/config)
+         :db {:database-name "hsp_test" :adapter "postgresql"}
+         :http-port (Integer. (+ 30000 (rand-int 666)))))
 
 (declare ^:dynamic system)
 (declare ^:dynamic *db*)
@@ -40,7 +39,7 @@
    opts))
 
 (defn with-db [f]
-  (binding [*db* (component/start (new-hikari-cp (:db (config))))]
+  (binding [*db* (component/start (new-hikari-cp (:db (test-config))))]
     (try
       (f)
       (finally (component/stop *db*)))))

@@ -1,5 +1,5 @@
 (ns hsp.controllers.patients
-  (:require [hsp.models.patient :as patient]
+  (:require [hsp.models.patient :as p]
             [hsp.fhir-version-transform :refer [transform current-fhir-version] :as t]))
 
 (defn transform-params [params]
@@ -10,16 +10,17 @@
 
 (defn index [db]
   {:status 200
-   :body {:patients (patient/all db)}})
+   :body {:patients (p/all db)}})
 
 (defn show [db id]
-  {:status 200
-   :body (patient/find-by-id db (read-string id))})
+  (if-let [patient (p/find-by-id db (read-string id))]
+    {:status 200 :body patient}))
 
 (defn create [db params]
-  (patient/create db (transform-params params))
+  (p/create db (transform-params params))
   {:status 204})
 
 (defn update-patient [db id params]
-  (patient/update-patient db (read-string id) (transform-params params))
-  {:status 204})
+  (let [result (p/update-patient db (read-string id) (transform-params params))]
+    (if (not (zero? result))
+      {:status 204})))
