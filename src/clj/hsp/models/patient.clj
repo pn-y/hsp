@@ -1,11 +1,8 @@
 (ns hsp.models.patient
   (:require [clojure.java.jdbc :as jdbc]
             [honeysql.helpers :as h]
-            [honeysql.format :refer [value]]
-            [honeysql.core :as sql]))
-
-(defn wrap-nested-maps [m]
-  (reduce-kv #(assoc %1 %2 (if (map? %3) (value %3) %3)) {} m))
+            [honeysql.core :as sql]
+            [hsp.lib.utils :refer [wrap-nested-maps]]))
 
 (defn all [db]
   (jdbc/query db (-> (sql/build
@@ -14,11 +11,7 @@
                      sql/format)))
 
 (defn find-by-id [db id]
-  (first (jdbc/query db (-> (sql/build
-                             :select :*
-                             :from :patients
-                             :where [:= :id id])
-                            sql/format))))
+  (jdbc/get-by-id db :patients id))
 
 (defn create [db patient]
   (first (jdbc/insert! db :patients patient)))
