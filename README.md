@@ -1,6 +1,7 @@
 # hsp
 
 [https://infinite-temple-14905.herokuapp.com/](https://infinite-temple-14905.herokuapp.com/)
+[![Build Status](https://travis-ci.org/pn-y/hsp.svg?branch=master)](https://travis-ci.org/pn-y/hsp)
 
 ## Development
 
